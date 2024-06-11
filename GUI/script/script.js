@@ -57,8 +57,8 @@ const p_video = `
 </img>
 `
 /* //////////////////////////////////////////////////////////////////////////////////////////////////////////// */
-const URL_WEBSOCKET       = "ws://192.168.24.90:2007"
-const URL_XHR             = "http://192.168.24.90:2007"
+const URL_WEBSOCKET       = "wss://kanomy.onrender.com"
+const URL_XHR             = "https://kanomy.onrender.com"
 /* //////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 const lod = document.getElementById('loading')
 const body = document.getElementById('contuner')
