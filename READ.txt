@@ -1,0 +1,61 @@
+//////////////////////////////////////////////////////////////////
+               To Update
+    git remote add origin https://github.com/islamdzl/isodpl.git
+    git branch -M main
+    git push -u origin main
+//////////////////////////////////////////////////////////////////
+creat user >>> post() >> {email, password , name , age , conutry} ***
+get user >>> post() >> {email , password} ***
+
+--------------------------> WebSoket <-------------v
+*** >>> on open() >v                               |
+    "diclar":{                                     |
+        "email":"Yor email",                       |
+        "password":"Yor password"                  |
+    }                                              |
+                                                   |
+*** >>> on send to >v                              |
+    "send_to":{                                    |
+        "to":"1",                                  |
+        "data":{                                   |
+            "message":"mn 2"                       |
+        }                                          |
+    },                                             |
+                                                   |
+*** >>> on random >v                               |
+    "random":true        >respons auto<            |
+___________________________________________________|
+
+
+---------------> mailer <-----------------
+                WebSoket
+              requist to server
+send to server data.[ creat_user , codeverify ]
+creat_user:{   
+    name , email , password , age , country
+}
+           response to application
+    codeverifystate : {true / false}
+                     
+              requist to server
+codeverify:{
+    code , email
+}
+           response to application
+    codeverify:{ true / false }
+
+
+-------------> postman! <-------------------
+        //1
+   "creat_user":{
+        "name":"user",
+        "email":"user@gmail.com",
+        "password":"12345678",
+        "country":"algeria",
+        "age": 0
+   }
+        // 2 
+    "codeverify":{
+        "code":"000000",
+        "email":"user@gmail.com"
+    }
