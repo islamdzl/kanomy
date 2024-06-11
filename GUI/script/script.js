@@ -68,7 +68,7 @@ var __COMAND_RANDOM;
 var __USER_INFO;
 var __LIVE
 var user_info;
-socket.onopen = ()=>{console.log('connection in WebSocket Server')}
+socket.onopen = ()=>{console.log('connection in WebSocket Server');DICLAR()}
 const DICLAR = ()=>{
     if (user_info) {  
         socket.send(JSON.stringify({
@@ -143,7 +143,7 @@ socket.onmessage = (message)=>{
         }
         
     }catch{
-        console.info('Error parsing response in server')
+        console.info('Error parsing response in server > ', message.data)
     }
 }
 window.onload = async()=>{
@@ -154,9 +154,6 @@ window.onload = async()=>{
         }else{
             body.innerHTML = p_login
         }
-    setTimeout(() => {
-        DICLAR()
-    }, 100);
 }
 const GO_TO_P = (P,I)=>{
     if (I) {
