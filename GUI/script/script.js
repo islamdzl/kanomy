@@ -104,16 +104,16 @@ socket.onmessage = (message)=>{
                         mediaRecorder.start(100); // تسجيل كل 100 مللي ثانية
                             mediaRecorder.ondataavailable = event => {
                                 if (event.data.size > 0 && socket.readyState === WebSocket.OPEN && __LIVE) {
-                                    socket.send(JSON.stringify({
-                                        send_to:{
-                                            to:__USER_INFO.ws,
-                                            resend:false,
-                                            data:{
-                                                type:"video",
-                                                video:event.data
+                                    socket.send(`{
+                                        "send_to":{
+                                            "to":${__USER_INFO.ws},
+                                            "resend":${false},
+                                            "data":{
+                                                "type":"video",
+                                                "video":${event.data}
                                             }
                                         }
-                                    }));
+                                    }`);
                                 }
                             };
                             video_me.srcObject = stream; // عرض الفيديو المباشر
