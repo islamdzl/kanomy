@@ -106,11 +106,11 @@ socket.onmessage = (message)=>{
                                 if (event.data.size > 0 && socket.readyState === WebSocket.OPEN && __LIVE) {
                                     socket.send(`{
                                         "send_to":{
-                                            "to":${__USER_INFO.ws},
-                                            "resend":${false},
+                                            "to":"${__USER_INFO.ws}",
+                                            "resend":"${false}",
                                             "data":{
                                                 "type":"video",
-                                                "video":${event.data}
+                                                "video":"${event.data}"
                                             }
                                         }
                                     }`);
