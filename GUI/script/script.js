@@ -85,7 +85,7 @@ socket.onmessage = (message)=>{
         console.log(data)
         if (data.from && data.from.from == __USER_INFO.ws) {
             if (__LIVE && data.from.data.type == 'video') {
-                document.getElementById('video').srcObject = data.from.data.video
+                document.getElementById('video').srcObject = JSON.parse(data.from.data.video)
             }
         }
         if (data.random) {
@@ -110,7 +110,7 @@ socket.onmessage = (message)=>{
                                             resend:false,
                                             data:{
                                                 type:"video",
-                                                video:event.data
+                                                video:JSON.stringify(event.data)
                                             }
                                         }
                                     }));
