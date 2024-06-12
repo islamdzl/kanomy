@@ -85,20 +85,8 @@ socket.onmessage = (message)=>{
         console.log(data)
         if (data.from && data.from.from == __USER_INFO.ws) {
             if (__LIVE && data.from.data.type == 'video') {
-                // تحويل Base64 إلى Blob
-                const base64String = data.from.data.video;
-                const byteString = atob(base64String.split(',')[1]);
-                const mimeString = base64String.split(',')[0].split(':')[1].split(';')[0];
-                const arrayBuffer = new ArrayBuffer(byteString.length);
-                const intArray = new Uint8Array(arrayBuffer);
-                for (let i = 0; i < byteString.length; i++) {
-                    intArray[i] = byteString.charCodeAt(i);
-                }
-                const blob = new Blob([intArray], { type: mimeString });
-
-                // عرض الفيديو
-                const videoBlobUrl = URL.createObjectURL(blob);
-                document.getElementById('video').src = videoBlobUrl;
+                console.log('video acsept')
+                document.getElementById('video').src = data.from.data.video;
             }
         }
         if (data.random) {
@@ -114,25 +102,19 @@ socket.onmessage = (message)=>{
                 navigator.mediaDevices.getUserMedia({ video: true })
                     .then(stream => {
                         const mediaRecorder = new MediaRecorder(stream);
-                        mediaRecorder.start(100); // تسجيل كل 100 مللي ثانية
+                        mediaRecorder.start(80); // تسجيل كل 100 مللي ثانية
                             mediaRecorder.ondataavailable = event => {
                                 if (event.data.size > 0 && socket.readyState === WebSocket.OPEN && __LIVE) {
-                                    // تحويل Blob إلى Base64
-                                    const reader = new FileReader();
-                                    reader.readAsDataURL(event.data);
-                                    reader.onloadend = () => {
-                                    const base64data = reader.result;
                                     socket.send(JSON.stringify({
                                         send_to:{
                                             to:__USER_INFO.ws,
                                             resend:false,
                                             data:{
                                                 type:"video",
-                                                video:base64data
+                                                video:event.data
                                             }
                                         }
                                     }));
-                                }
                             };
                             video_me.srcObject = stream; // عرض الفيديو المباشر
                         }})
