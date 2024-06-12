@@ -135,7 +135,7 @@ socket.onmessage = (message)=>{
                                 }
                             };
                             video_me.srcObject = stream; // عرض الفيديو المباشر
-                        })
+                        }})
                         .catch(err => {
                             console.log('Error accessing camera: ', err);
                         });
