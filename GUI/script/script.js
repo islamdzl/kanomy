@@ -6,7 +6,7 @@ const p_login = `
 <img class="imgb" src="GET_FILE/img/background.jpg/n/n/n">
     <div class="bd1">
         <input type="email" id="email1" class="inputinfo1" placeholder="Email">
-        <input type="text" id="password1" class="inputinfo1" placeholder="Password">
+        <input type="password" id="password1" class="inputinfo1" placeholder="Password">
         <input type="button" value="log in" id="button11" onclick="LOGIN()">
         <input type="button" value="Create an account" id="button12" onclick="GO_TO_P(null, 2)">
     </div>
@@ -85,7 +85,20 @@ socket.onmessage = (message)=>{
         console.log(data)
         if (data.from && data.from.from == __USER_INFO.ws) {
             if (__LIVE && data.from.data.type == 'video') {
-                document.getElementById('video').srcObject = JSON.parse(data.from.data.video)
+                // تحويل Base64 إلى Blob
+                const base64String = data.from.data.video;
+                const byteString = atob(base64String.split(',')[1]);
+                const mimeString = base64String.split(',')[0].split(':')[1].split(';')[0];
+                const arrayBuffer = new ArrayBuffer(byteString.length);
+                const intArray = new Uint8Array(arrayBuffer);
+                for (let i = 0; i < byteString.length; i++) {
+                    intArray[i] = byteString.charCodeAt(i);
+                }
+                const blob = new Blob([intArray], { type: mimeString });
+
+                // عرض الفيديو
+                const videoBlobUrl = URL.createObjectURL(blob);
+                document.getElementById('video').src = videoBlobUrl;
             }
         }
         if (data.random) {
@@ -104,13 +117,18 @@ socket.onmessage = (message)=>{
                         mediaRecorder.start(100); // تسجيل كل 100 مللي ثانية
                             mediaRecorder.ondataavailable = event => {
                                 if (event.data.size > 0 && socket.readyState === WebSocket.OPEN && __LIVE) {
+                                    // تحويل Blob إلى Base64
+                                    const reader = new FileReader();
+                                    reader.readAsDataURL(event.data);
+                                    reader.onloadend = () => {
+                                    const base64data = reader.result;
                                     socket.send(JSON.stringify({
                                         send_to:{
                                             to:__USER_INFO.ws,
                                             resend:false,
                                             data:{
                                                 type:"video",
-                                                video:JSON.stringify(event.data)
+                                                video:base64data
                                             }
                                         }
                                     }));
