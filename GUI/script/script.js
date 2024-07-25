@@ -113,10 +113,10 @@ socket.onmessage = async(message)=>{
                             send_to:{
                                 to:__USER_INFO.ws,
                                 resend:false,
-                                type:'video',
                                 data:{
-                                    stream:event.data
-                                }
+                                    stream:event.data,
+                                    type:'video'
+                            }
                             }
                         }))
                     }
