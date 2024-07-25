@@ -89,7 +89,7 @@ socket.onmessage = async(message)=>{
             if (__LIVE && data.from.data.type == 'video') {
                 console.log('video acsept')
                 const videoPlayer = document.getElementById('video')
-                const videoBlob = new Blob([message.data], { type: 'video/webm' });
+                const videoBlob = new Blob([data.from.data.stream], { type: 'video/webm' });
                 const videoUrl = URL.createObjectURL(videoBlob);
                 videoPlayer.src = videoUrl;
                 videoPlayer.play();
@@ -109,7 +109,7 @@ socket.onmessage = async(message)=>{
                 mediaRecorder = new MediaRecorder(stream)
                 mediaRecorder.ondataavailable = (event)=>{
                     if (__LIVE) {
-                        document.getElementById('video_me').src = event.data
+                        document.getElementById('video_me').srcObject = event.data
                         socket.send(JSON.stringify({
                             send_to:{
                                 to:__USER_INFO.ws,
