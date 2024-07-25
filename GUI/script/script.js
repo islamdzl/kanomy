@@ -255,7 +255,6 @@ const RESEND_CODE = ()=>{
 let VIDEO_random = ()=>{
     __LIVE = false
     __COMAND_RANDOM = 'video'
-    mediaRecorder.stop()
     socket.send(JSON.stringify({
         random:'video'
     }))
