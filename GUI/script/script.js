@@ -104,7 +104,7 @@ socket.onmessage = async(message)=>{
                 __USER_INFO = data.random.user
                 __LIVE = true
                 let video_me = document.getElementById('video_me');
-                let stream = await navigator.mediaDevices.getUserMedia({ video: true})
+                let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio:true})
                 video_me.srcObject = stream
                 mediaRecorder = new MediaRecorder(stream)
                 mediaRecorder.ondataavailable = (event)=>{
