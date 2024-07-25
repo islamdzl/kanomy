@@ -74,7 +74,7 @@ module.exports = (app,server)=>{
                         if (RANDOMV[0].id != ws.id) {
                             let RAN = RANDOMV[0]
                             await SCuser('get-p',{ws:ws.id}).
-                            then((info)=>{let inf = {};inf.type = 'video'; inf.ws=info.ws; inf.user = info;RAN.send(JSON.stringify({random:inf}))})
+                            then((info)=>{let inf = {};inf.type = 'video'; inf.ws=info.ws; inf.user = info; RAN.send(JSON.stringify({random:inf}))})
                             await SCuser('get-p',{ws:RAN.id}).
                             then((info)=>{let inf = {};inf.type = 'video'; inf.ws=info.ws; inf.user = info; ws.send(JSON.stringify({random:inf}))})
                             RANDOMV = [] 

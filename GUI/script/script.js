@@ -57,17 +57,18 @@ const p_video = `
 </img>
 `
 /* //////////////////////////////////////////////////////////////////////////////////////////////////////////// */
-const URL_WEBSOCKET       = "wss://kanomy.onrender.com"
-const URL_XHR             = "https://kanomy.onrender.com"
+const URL_WEBSOCKET       = "ws//:192.168.178.90:2007" //"wss://kanomy.onrender.com"  
+const URL_XHR             = "http://192.168.178.90:2007" //"https://kanomy.onrender.com"  
 /* //////////////////////////////////////////////////////////////////////////////////////////////////////////// */
 const lod = document.getElementById('loading')
 const body = document.getElementById('contuner')
-const socket = new WebSocket(URL_WEBSOCKET)
+const socket = new WebSocket(URL_WEBSOCKET) 
 var __USER_CREAT;
 var __COMAND_RANDOM;
 var __USER_INFO;
 var __LIVE
 var user_info;
+var mediaRecorder;
 socket.onopen = ()=>{console.log('connection in WebSocket Server');DICLAR()}
 const DICLAR = ()=>{
     if (user_info) {  
@@ -79,14 +80,19 @@ const DICLAR = ()=>{
         }))
     }
 }
-socket.onmessage = (message)=>{
+socket.onmessage = async(message)=>{
+    console.log(message)
     try{
         let data = JSON.parse(message.data)
         console.log(data)
         if (data.from && data.from.from == __USER_INFO.ws) {
             if (__LIVE && data.from.data.type == 'video') {
                 console.log('video acsept')
-                document.getElementById('video').src = data.from.data.video;
+                const videoPlayer = document.getElementById('video')
+                const videoBlob = new Blob([message.data], { type: 'video/webm' });
+                const videoUrl = URL.createObjectURL(videoBlob);
+                videoPlayer.src = videoUrl;
+                videoPlayer.play();
             }
         }
         if (data.random) {
@@ -99,28 +105,23 @@ socket.onmessage = (message)=>{
                 __USER_INFO = data.random.user
                 __LIVE = true
                 let video_me = document.getElementById('video_me');
-                navigator.mediaDevices.getUserMedia({ video: true })
-                    .then(stream => {
-                        const mediaRecorder = new MediaRecorder(stream);
-                        mediaRecorder.start(80); // تسجيل كل 100 مللي ثانية
-                            mediaRecorder.ondataavailable = event => {
-                                if (event.data.size > 0 && socket.readyState === WebSocket.OPEN && __LIVE) {
-                                    socket.send(JSON.stringify({
-                                        send_to:{
-                                            to:__USER_INFO.ws,
-                                            resend:false,
-                                            data:{
-                                                type:"video",
-                                                video:event.data
-                                            }
-                                        }
-                                    }));
-                            };
-                            video_me.srcObject = stream; // عرض الفيديو المباشر
-                        }})
-                        .catch(err => {
-                            console.log('Error accessing camera: ', err);
-                        });
+                let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio:true})
+                mediaRecorder = new MediaRecorder(stream)
+                mediaRecorder.ondataavailable = (event)=>{
+                    if (__LIVE) {
+                        document.getElementById('video_me').src = event.data
+                        socket.send(JSON.stringify({
+                            send_to:{
+                                to:__USER_INFO.ws,
+                                resend:false,
+                                data:{
+                                    stream:event.data
+                                }
+                            }
+                        }))
+                        }
+                    }
+                mediaRecorder.start(100)
             }
         }
         if (data.codeverifystate == false || data.codeverifystate) {
@@ -143,7 +144,11 @@ socket.onmessage = (message)=>{
         }
         
     }catch{
-        console.info('Error parsing response in server > ', message.data)
+        try{
+
+        }catch{
+            console.info('Error parsing response in server > ', message.data)     
+        }
     }
 }
 window.onload = async()=>{
@@ -163,6 +168,7 @@ const GO_TO_P = (P,I)=>{
     }
 }
 const LOGIN = ()=>{
+    lod.style.display = 'block'
     let email = document.getElementById('email1').value
     let password = document.getElementById('password1').value
     console.log('login')
@@ -180,12 +186,13 @@ const LOGIN = ()=>{
             }catch{
                 window.alert(xhr.responseText)
             }
+            lod.style.display = 'none'
         }
     }
     xhr.send(JSON.stringify({
         email:email, 
         password:password
-    }))
+    })) 
 }
 const CREATE_USER = ()=>{
     let email = document.getElementById('email2').value
@@ -229,7 +236,7 @@ const SEND_CODE_VERIFY = ()=>{
     let code = document.getElementById('code_verify').value
     console.log(code.length)
     if (code.length == 5 || code.length == 6) {
-        socket.send(JSON.stringify({
+        socket.send(JSON.stringify({ 
             code_verify:{
                 code:code,
                 email:__USER_CREAT.email
