@@ -108,7 +108,7 @@ socket.onmessage = async(message)=>{
                 let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio:true})
                 mediaRecorder = new MediaRecorder(stream)
                 mediaRecorder.ondataavailable = (event)=>{
-                    video_me.srcObject = event.data
+                    video_me.src = event.data
                     socket.send(JSON.stringify({
                            send_to:{
                             to:__USER_INFO.ws,
