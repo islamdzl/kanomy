@@ -108,18 +108,16 @@ socket.onmessage = async(message)=>{
                 let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio:true})
                 mediaRecorder = new MediaRecorder(stream)
                 mediaRecorder.ondataavailable = (event)=>{
-                    if (__LIVE) {
-                        document.getElementById('video_me').srcObject = event.data
-                        socket.send(JSON.stringify({
-                            send_to:{
-                                to:__USER_INFO.ws,
-                                resend:false,
-                                data:{
-                                    stream:event.data
-                                }
+                    video_me.srcObject = event.data
+                    socket.send(JSON.stringify({
+                           send_to:{
+                            to:__USER_INFO.ws,
+                            resend:false,
+                            data:{
+                                stream:event.data
                             }
-                        }))
                         }
+                    }))
                     }
                 mediaRecorder.start(100)
             }
@@ -144,11 +142,7 @@ socket.onmessage = async(message)=>{
         }
         
     }catch{
-        try{
-
-        }catch{
-            console.info('Error parsing response in server > ', message.data)     
-        }
+        console.info('Error parsing response in server > ', message.data)     
     }
 }
 window.onload = async()=>{
@@ -261,6 +255,7 @@ const RESEND_CODE = ()=>{
 let VIDEO_random = ()=>{
     __LIVE = false
     __COMAND_RANDOM = 'video'
+    mediaRecorder.stop()
     socket.send(JSON.stringify({
         random:'video'
     }))
