@@ -81,7 +81,6 @@ const DICLAR = ()=>{
     }
 }
 socket.onmessage = async(message)=>{
-    console.log(message)
     try{
         let data = JSON.parse(message.data)
         console.log(data)
@@ -114,7 +113,7 @@ socket.onmessage = async(message)=>{
                             to:__USER_INFO.ws,
                             resend:false,
                             data:{
-                                stream:`${event.data}`
+                                stream:event.data
                             }
                         }
                     }))
