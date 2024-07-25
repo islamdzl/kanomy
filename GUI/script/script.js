@@ -105,18 +105,21 @@ socket.onmessage = async(message)=>{
                 __LIVE = true
                 let video_me = document.getElementById('video_me');
                 let stream = await navigator.mediaDevices.getUserMedia({ video: true, audio:true})
+                video_me.srcObject = stream
                 mediaRecorder = new MediaRecorder(stream)
                 mediaRecorder.ondataavailable = (event)=>{
-                    video_me.src = event.data
-                    socket.send(JSON.stringify({
-                           send_to:{
-                            to:__USER_INFO.ws,
-                            resend:false,
-                            data:{
-                                stream:event.data
+                    if (__LIVE) {
+                        socket.send(JSON.stringify({
+                            send_to:{
+                                to:__USER_INFO.ws,
+                                resend:false,
+                                type:'video',
+                                data:{
+                                    stream:event.data
+                                }
                             }
-                        }
-                    }))
+                        }))
+                    }
                     }
                 mediaRecorder.start(100)
             }
