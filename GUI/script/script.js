@@ -114,7 +114,7 @@ socket.onmessage = async(message)=>{
                             to:__USER_INFO.ws,
                             resend:false,
                             data:{
-                                stream:event.data
+                                stream:`${event.data}`
                             }
                         }
                     }))
